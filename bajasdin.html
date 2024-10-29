@@ -1,39 +1,3 @@
-<?php
-$servername = "localhost"; // Cambia si es necesario
-$username = "root";        // Cambia por tu usuario de MySQL
-$password = "";            // Cambia por tu contraseña de MySQL
-$dbname = "dinero";
-
-// Crear conexión
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
-
-// Eliminar registro si se recibe un ID
-if (isset($_POST['delete'])) {
-    $usuario = $_POST['usuario'];
-
-    // Preparar la consulta de eliminación
-    $stmt = $conn->prepare("DELETE FROM dp WHERE usuario = ?");
-    $stmt->bind_param("s", $usuario);
-
-    if ($stmt->execute()) {
-        echo "<div class='success'>Usuario eliminado exitosamente.</div>";
-    } else {
-        echo "<div class='alert'>Error al eliminar el usuario: " . $stmt->error . "</div>";
-    }
-
-    $stmt->close();
-}
-
-// Obtener todos los usuarios de la base de datos
-$result = $conn->query("SELECT usuario FROM dp");
-
-$conn->close();
-?>
 
 <!DOCTYPE html>
 <html lang="es">
