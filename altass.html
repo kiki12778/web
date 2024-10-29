@@ -1,56 +1,4 @@
-<?php 
-$servername = "localhost"; // Cambia si es necesario
-$username = "root";        // Cambia por tu usuario de MySQL
-$password = "";            // Cambia por tu contraseña de MySQL
-$dbname = "dinero";
 
-// Crear conexión
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
-
-// Si se envía el formulario
-$nom = $a_p = $a_m = $usuario = $contrasena = ''; // Inicializar variables
-$error = ''; // Variable para errores
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener datos del formulario
-    $nom = $_POST['nom'];
-    $a_p = $_POST['a_p'];
-    $a_m = $_POST['a_m'];
-    $usuario = $_POST['usuario'];
-    $contrasena = $_POST['contrasena']; // Sin hashing
-
-    // Validar si el nombre de usuario ya existe
-    $stmt = $conn->prepare("SELECT * FROM dp WHERE usuario = ?");
-    $stmt->bind_param("s", $usuario);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $error = "El nombre de usuario ya está en uso.";
-    } else {
-        // Insertar datos en la base de datos sin hashear la contraseña
-        $stmt = $conn->prepare("INSERT INTO dp (nom, a_p, a_m, usuario, contrasena) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $nom, $a_p, $a_m, $usuario, $contrasena);
-        
-        if ($stmt->execute()) {
-            // Redirigir a prueba.php al registro exitoso
-            header("Location: prueva.php");
-            exit();
-        } else {
-            $error = "Error: " . $stmt->error;
-        }
-    }
-
-    $stmt->close();
-}
-
-$conn->close();
-?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -144,16 +92,16 @@ $conn->close();
             <h1>Formulario de Registro</h1>
             <form action="" method="POST">
                 <label for="nom">Nombre:</label>
-                <input type="text" name="nom" value="<?php echo htmlspecialchars($nom); ?>" required>
+                <input type="text" name="nom" value="" required>
 
                 <label for="a_p">Apellido Paterno:</label>
-                <input type="text" name="a_p" value="<?php echo htmlspecialchars($a_p); ?>" required>
+                <input type="text" name="a_p" value="" required>
 
                 <label for="a_m">Apellido Materno:</label>
-                <input type="text" name="a_m" value="<?php echo htmlspecialchars($a_m); ?>" required>
+                <input type="text" name="a_m" value="" required>
 
                 <label for="usuario">Nombre de Usuario:</label>
-                <input type="text" name="usuario" value="<?php echo htmlspecialchars($usuario); ?>" required>
+                <input type="text" name="usuario" value="" required>
 
                 <label for="contrasena">Contraseña:</label>
                 <input type="password" name="contrasena" required>
